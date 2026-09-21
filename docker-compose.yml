@@ -1,0 +1,8 @@
+services:
+  juice-shop:
+    build:
+      context: ./juice-shop
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: ie3142-juice-shop
