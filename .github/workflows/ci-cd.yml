@@ -35,3 +35,26 @@ jobs:
 
       - name: Run Semgrep SAST scan
         run: semgrep scan --config=auto --error juice-shop/routes/basket.ts juice-shop/routes/basketItems.ts
+
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Generate lockfile (repo disables it via .npmrc)
+        working-directory: ./juice-shop
+        run: npm install --package-lock-only --package-lock=true --ignore-scripts
+
+      - name: Dependency audit report (informational)
+        working-directory: ./juice-shop
+        run: npm audit --omit=dev || true
+
+      - name: Dependency audit gate (fails on critical)
+        working-directory: ./juice-shop
+        run: npm audit --omit=dev --audit-level=critical
