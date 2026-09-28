@@ -8,3 +8,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: ./juice-shop
+        run: npm install --omit=dev
+
+      - name: Build application
+        working-directory: ./juice-shop
+        run: npm run build:frontend
