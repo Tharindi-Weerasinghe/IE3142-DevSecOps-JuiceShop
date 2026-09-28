@@ -2,6 +2,9 @@ name: CI/CD Pipeline
 
 on: push
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -21,3 +24,14 @@ jobs:
       - name: Build application
         working-directory: ./juice-shop
         run: npm run build:frontend
+
+  sast-scan:
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep SAST scan
+        run: semgrep scan --config=auto --error juice-shop/routes/basket.ts juice-shop/routes/basketItems.ts
